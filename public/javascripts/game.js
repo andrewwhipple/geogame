@@ -4,7 +4,7 @@ var globalPositionWatchNumber;
 var mp3FilenameArray = []; //initialize with filenames
 
 function getLocation() {
-	globalPositionWatchNumber = navigator.geolocation.getCurrentPosition(printPosition, handleError, {enableHighAccuracy: true});
+	globalPositionWatchNumber = navigator.geolocation.watchPosition(printPosition, handleError, {enableHighAccuracy: true});
 	console.log("Meow");	
 }
 
