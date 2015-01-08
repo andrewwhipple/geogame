@@ -6,6 +6,7 @@ var globalPositionWatchNumber;
 var mp3FilenameMap = new Map(); //initialize with filenames
 var snd = null;
 var gameOver = false;
+var finalPos; //initiliaze
 
 function getLocation() {
 	globalPositionWatchNumber = navigator.geolocation.watchPosition(setPosition, handleError, {enableHighAccuracy: true});
@@ -22,6 +23,8 @@ function handleError(err) {
 }
 	
 }
+
+//Debug function putting it in an alert
 function printPosition(position) {
 	var latitude = position.coords.latitude;
 	var longitude = position.coords.longitude;
@@ -39,6 +42,7 @@ function setPosition(position) {
 	
 	console.log("globalLat: " + globalLat + ", globalLong: " + globalLong);
 	checkSound();
+	printPosition(position);
 	
 }
 
@@ -46,15 +50,13 @@ function fillPositionArray() {
 	var pos = {
 		latitude: 37.42512,
 		longitude: -122.16074
-	}
-	
+	};
 	mp3FilenameMap.set(pos, 'InsideOut');
 	
 	var pos2 = {
 		latitude: 37.43510,
 		longitude: -112.16070
-	}	
-	
+	};	
 	mp3FilenameMap.set(pos2, 'WakeBakeSkate');
 	
 }
@@ -73,12 +75,9 @@ function isPos2WithinMarginOfPos1(pos1, pos2, margin) {
 	if (lat2 <= maxLat && lat2 >= minLat) {
 		if (long2 <=maxLong && long2 >= minLong) {
 			return true;
-		}
-		
+		}		
 	}
-	return false;
-	
-	
+	return false;	
 }
 
 function checkSound() {
@@ -89,7 +88,11 @@ function checkSound() {
 		console.log(globalPos.latitude);
 		console.log(key.longitude);
 		console.log(globalPos.longitude);
-		if (isPos2WithinMarginOfPos1(key, globalPos, 0.0001)) play(mp3FilenameMap.get(key));
+		if (isPos2WithinMarginOfPos1(key, globalPos, 0.0001)) {
+			play(mp3FilenameMap.get(key));
+			mp3FilenameMap.delete(key); //Right now works for only doing something once, deletes as soon as it's accessed
+			if (key === finalPos) endGame();
+		}
 	}
 	
 }
@@ -104,10 +107,8 @@ function play(sound) {
     		else */
 		if(snd.canPlayType('audio/mp3')) {
       	  snd = new Audio(sound + '.mp3');
-    	}
- 
-   		snd.play();
-			
+    	} 
+   		snd.play();	
  	} else {
    		alert('HTML5 Audio is not supported by your browser!');
   	}
@@ -119,10 +120,9 @@ $('#playButton').click(function(){
 	getLocation();
 });
 
+
 function endGame() {
-	clearWatch(globalPositionWatchNumber);
-	
-	
+	clearWatch(globalPositionWatchNumber);	
 }
 
 
