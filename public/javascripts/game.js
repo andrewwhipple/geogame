@@ -1,10 +1,14 @@
 var globalLat;
-var globalLong; //initialize?
+var globalLong;
+var globalPos = {latitude: 0, longitude: 0};
+ //initialize?
 var globalPositionWatchNumber;
-var mp3FilenameArray = []; //initialize with filenames
+var mp3FilenameMap = new Map(); //initialize with filenames
+var snd = null;
+var gameOver = false;
 
 function getLocation() {
-	globalPositionWatchNumber = navigator.geolocation.watchPosition(printPosition, handleError, {enableHighAccuracy: true});
+	globalPositionWatchNumber = navigator.geolocation.watchPosition(setPosition, handleError, {enableHighAccuracy: true});
 	console.log("Meow");	
 }
 
@@ -21,16 +25,107 @@ function handleError(err) {
 function printPosition(position) {
 	var latitude = position.coords.latitude;
 	var longitude = position.coords.longitude;
+	
 	console.log(latitude + ', ' + longitude);
 	$('#alertSpace').html('<div class="alert alert-success" role="alert">Lat: ' + latitude + ', Long: ' + longitude + '</div>');
 }
 
-function setLocation(position) {
-	globalLat = position.coords.latitude;
-	globalLong = position.coords.longitude;
-	console.log("globalLat: " + latitude + ", globalLong: " + longitude)
+function setPosition(position) {
+	globalPos.latitude = position.coords.latitude;
+	globalPos.longitude = position.coords.longitude;
+	
+	globalLat = globalPos.latitude;
+	globalLong = globalPos.longitude;
+	
+	console.log("globalLat: " + globalLat + ", globalLong: " + globalLong);
+	checkSound();
 	
 }
+
+function fillPositionArray() {
+	var pos = {
+		latitude: 37.42512,
+		longitude: -122.16074
+	}
+	
+	mp3FilenameMap.set(pos, 'InsideOut');
+	
+	var pos2 = {
+		latitude: 37.43510,
+		longitude: -112.16070
+	}	
+	
+	mp3FilenameMap.set(pos2, 'WakeBakeSkate');
+	
+}
+
+function isPos2WithinMarginOfPos1(pos1, pos2, margin) {
+	var lat1 = pos1.latitude;
+	var lat2 = pos2.latitude;
+	var long1 = pos1.longitude;
+	var long2 = pos2.longitude;
+	
+	var maxLat = lat1 + margin;
+	var minLat = lat1 - margin;
+	var maxLong = long1 + margin;
+	var minLong = long1 - margin;
+	
+	if (lat2 <= maxLat && lat2 >= minLat) {
+		if (long2 <=maxLong && long2 >= minLong) {
+			return true;
+		}
+		
+	}
+	return false;
+	
+	
+}
+
+function checkSound() {
+	console.log("Checksound");
+	for (var key of mp3FilenameMap.keys()) {
+		console.log("In the iterator");
+		console.log(key.latitude);
+		console.log(globalPos.latitude);
+		console.log(key.longitude);
+		console.log(globalPos.longitude);
+		if (isPos2WithinMarginOfPos1(key, globalPos, 0.0001)) play(mp3FilenameMap.get(key));
+	}
+	
+}
+function play(sound) {
+	if (window.HTMLAudioElement) {
+		if (snd != null) snd.pause();
+		snd = new Audio('');
+ 
+    	/*if(snd.canPlayType('audio/ogg')) {
+     	   snd = new Audio('sounds/' + sound + '.ogg');
+   		 }
+    		else */
+		if(snd.canPlayType('audio/mp3')) {
+      	  snd = new Audio(sound + '.mp3');
+    	}
+ 
+   		snd.play();
+			
+ 	} else {
+   		alert('HTML5 Audio is not supported by your browser!');
+  	}
+}
+
+
+$('#playButton').click(function(){
+	fillPositionArray();
+	getLocation();
+});
+
+function endGame() {
+	clearWatch(globalPositionWatchNumber);
+	
+	
+}
+
+
 
 /*General design:
 
@@ -89,4 +184,3 @@ function playSoundAtIndex(index) {
 */
 
 
-getLocation();
