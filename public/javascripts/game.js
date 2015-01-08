@@ -3,7 +3,7 @@ var globalLong;
 var globalPos = {latitude: 0, longitude: 0};
  //initialize?
 var globalPositionWatchNumber;
-var mp3FilenameMap = new Map(); //initialize with filenames
+var mp3FilenameMap = new Map();
 var snd = null;
 var gameOver = false;
 var finalPos; //initiliaze
@@ -91,7 +91,7 @@ function checkSound() {
 		if (isPos2WithinMarginOfPos1(key, globalPos, 0.0001)) {
 			play(mp3FilenameMap.get(key));
 			mp3FilenameMap.delete(key); //Right now works for only doing something once, deletes as soon as it's accessed
-			if (key === finalPos) endGame();
+			//if (key === finalPos) endGame();
 		}
 	}
 	
@@ -115,7 +115,9 @@ function play(sound) {
 }
 
 
-$('#alertSpace').html('<div class="alert alert-success" role="alert">Ummmmm</div>');
+//$('#alertSpace').html('<div class="alert alert-success" role="alert">Ummmmm</div>');
+
+document.querySelector('#alertSpace').innerHTML = "Javascript Linked!";
 
 $('#playButton').click(function(){
 	fillPositionArray();
