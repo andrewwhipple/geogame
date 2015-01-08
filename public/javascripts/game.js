@@ -116,6 +116,7 @@ function play(sound) {
 
 
 $('#playButton').click(function(){
+	$('#alertSpace').html('<div class="alert alert-success" role="alert">Ummmmm</div>');
 	fillPositionArray();
 	getLocation();
 });
