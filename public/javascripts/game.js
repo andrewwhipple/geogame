@@ -3,10 +3,16 @@ var globalLong;
 var globalPos = {latitude: 0, longitude: 0};
  //initialize?
 var globalPositionWatchNumber;
-var mp3FilenameMap = new Map();
+//var mp3FilenameMap = new Map();
 var snd = null;
 var gameOver = false;
 var finalPos; //initiliaze
+
+
+//Test using 2 arrays instead of a map
+var positionArray = [];
+var mp3FilenameArray = [];
+
 
 function getLocation() {
 	globalPositionWatchNumber = navigator.geolocation.watchPosition(setPosition, handleError, {enableHighAccuracy: true});
@@ -47,7 +53,7 @@ function setPosition(position) {
 }
 
 function fillPositionArray() {
-	var pos = {
+	/*var pos = {
 		latitude: 37.42512,
 		longitude: -122.16074
 	};
@@ -57,7 +63,21 @@ function fillPositionArray() {
 		latitude: 37.43510,
 		longitude: -112.16070
 	};	
-	mp3FilenameMap.set(pos2, 'WakeBakeSkate');
+	mp3FilenameMap.set(pos2, 'WakeBakeSkate');*/
+		
+	var pos = {
+		latitude: 37.42512,
+		longitude: -122.16074
+	};
+	positionArray[0] = pos;
+	mp3FilenameArray[0] = 'InsideOut';
+
+	var pos2 = {
+		latitude: 37.43510,
+		longitude: -112.16070
+	};	
+	positionArray[1] = pos2;
+	mp3FilenameArray[1] = 'WakeBakeSkate';
 	
 }
 
@@ -81,7 +101,26 @@ function isPos2WithinMarginOfPos1(pos1, pos2, margin) {
 }
 
 function checkSound() {
-	console.log("Checksound");
+	console.log('Checksound');
+	for (var i = 0; i < positionArray.length; i++) {
+		console.log('forloop: '+ i);
+		console.log(positionArray[i].latitude);
+		console.log(globalPos.latitude);
+		console.log(positionArray[i].longitude);
+		console.log(globalPos.longitude);
+		if (isPos2WithinMarginOfPos1(positionArray[i], globalPos, 0.0001)) {
+			play(mp3FilenameArray[i]);
+			var removed = positionArray.splice(i, 1);
+			console.log(removed[0]);
+			removed = mp3FilenameArray.splice(i, 1);
+			console.log(removed[0]);
+		}
+		
+	}
+	
+	
+	
+	/*console.log("Checksound");
 	mp3FilenameMap.forEach(function (value, key, mapObj) {
 		console.log('iterator');
 		console.log(key.latitude);
@@ -92,7 +131,7 @@ function checkSound() {
 			play(value);
 			//mp3FilenameMap.delete(key);
 		}
-	});
+	});*/
 	
 	
 	/*for (var key of mp3FilenameMap.keys()) {
@@ -132,6 +171,7 @@ function play(sound) {
 //$('#alertSpace').html('<div class="alert alert-success" role="alert">Ummmmm</div>');
 
 document.querySelector('#alertSpace').innerHTML = "Javascript Linked!";
+
 
 $('#playButton').click(function(){
 	fillPositionArray();
