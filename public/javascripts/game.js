@@ -82,18 +82,17 @@ function isPos2WithinMarginOfPos1(pos1, pos2, margin) {
 
 function checkSound() {
 	console.log("Checksound");
-	
-	for (var key of mp3FilenameMap.keys()) {
-		console.log("the iterator");
+	mp3FilenameMap.forEach(function (value, key, mapObj) {
+		console.log('iterator');
 		console.log(key.latitude);
 		console.log(globalPos.latitude);
 		console.log(key.longitude);
 		console.log(globalPos.longitude);
 		if (isPos2WithinMarginOfPos1(key, globalPos, 0.0001)) {
-			play(mp3FilenameMap.get(key));
-			mp3FilenameMap.delete(key);
+			play(value);
+			//mp3FilenameMap.delete(key);
 		}
-	}
+	});
 	
 	
 	/*for (var key of mp3FilenameMap.keys()) {
