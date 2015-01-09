@@ -200,7 +200,7 @@ function pauseAll() {
 }
 //$('#alertSpace').html('<div class="alert alert-success" role="alert">Ummmmm</div>');
 
-document.querySelector('#alertSpace').innerHTML = "Javascript Linked!";
+//document.querySelector('#alertSpace').innerHTML = "Javascript Linked!";
 
 
 $('#playButton').click(function(){
