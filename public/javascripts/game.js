@@ -172,7 +172,7 @@ function play(sound) {
 function loadSounds() {
 	snd = new Audio('InsideOut.mp3');
 	snd.play();
-	//snd.pause();
+	snd.pause();
 	
 	
 }
@@ -184,6 +184,10 @@ document.querySelector('#alertSpace').innerHTML = "Javascript Linked!";
 $('#playButton').click(function(){
 	loadSounds();
 	fillPositionArray();
+	setTimeout(function() {
+		snd.play();
+	}, 10000);
+	
 	//getLocation();
 });
 
