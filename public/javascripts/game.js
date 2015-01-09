@@ -4,15 +4,16 @@ var globalPos = {latitude: 0, longitude: 0};
  //initialize?
 var globalPositionWatchNumber;
 //var mp3FilenameMap = new Map();
-var snd = null;
-var snd2 = null;
+var snd0 = null;
+var snd1 = null;
+var curSnd = null;
 var gameOver = false;
 var finalPos; //initiliaze
 
 
 //Test using 2 arrays instead of a map
 var positionArray = [];
-var mp3FilenameArray = [];
+var sndArray = [];
 
 
 function getLocation() {
@@ -71,14 +72,14 @@ function fillPositionArray() {
 		longitude: -122.16074
 	};
 	positionArray[0] = pos;
-	mp3FilenameArray[0] = 'InsideOut';
+	sndArray[0] = snd0;
 
 	var pos2 = {
 		latitude: 37.43510,
 		longitude: -112.16070
 	};	
 	positionArray[1] = pos2;
-	mp3FilenameArray[1] = 'WakeBakeSkate';
+	sndArray[1] = snd1;
 	
 }
 
@@ -110,10 +111,12 @@ function checkSound() {
 		console.log(positionArray[i].longitude);
 		console.log(globalPos.longitude);
 		if (isPos2WithinMarginOfPos1(positionArray[i], globalPos, 0.1)) {
-			play(mp3FilenameArray[i]);
+			if (curSnd != null) curSnd.pause();
+			sndArray[i].play();
+			curSnd = sndArray[i];
 			var removed = positionArray.splice(i, 1);
 			console.log(removed[0]);
-			removed = mp3FilenameArray.splice(i, 1);
+			removed = sndArray.splice(i, 1);
 			console.log(removed[0]);
 		}
 		
@@ -171,13 +174,13 @@ function play(sound) {
 }
 
 function loadSounds() {
-	snd = new Audio('InsideOut.mp3');
-	snd.play();
-	snd.pause();
+	snd0 = new Audio('InsideOut.mp3');
+	snd0.play();
+	snd0.pause();
 	
-	snd2 = new Audio('WakeBakeSkate.mp3');
-	snd2.play();
-	snd2.pause();
+	snd1 = new Audio('WakeBakeSkate.mp3');
+	snd1.play();
+	snd1.pause();
 	
 	
 	
@@ -190,30 +193,7 @@ document.querySelector('#alertSpace').innerHTML = "Javascript Linked!";
 $('#playButton').click(function(){
 	loadSounds();
 	fillPositionArray();
-	setTimeout(function() {
-		snd.play();
-		setTimeout(function() {
-			snd.pause();
-			setTimeout(function() {
-				snd2.play();
-				setTimeout(function() {
-					snd2.pause();
-					setTimeout(function() {
-						snd.play();
-						setTimeout(function() {
-							snd2.play();
-						}, 3000);
-					}, 3000);
-				}, 3000);
-			}, 3000);
-		}, 3000);
-	}, 3000);
-	
-	
-	
-	
-	
-	//getLocation();
+	getLocation();
 });
 
 
