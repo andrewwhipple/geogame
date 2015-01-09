@@ -5,6 +5,7 @@ var globalPos = {latitude: 0, longitude: 0};
 var globalPositionWatchNumber;
 //var mp3FilenameMap = new Map();
 var snd = null;
+var snd2 = null;
 var gameOver = false;
 var finalPos; //initiliaze
 
@@ -174,6 +175,11 @@ function loadSounds() {
 	snd.play();
 	snd.pause();
 	
+	snd2 = new Audio('WakeBakeSkate.mp3');
+	snd2.play();
+	snd2.pause();
+	
+	
 	
 }
 //$('#alertSpace').html('<div class="alert alert-success" role="alert">Ummmmm</div>');
@@ -186,7 +192,17 @@ $('#playButton').click(function(){
 	fillPositionArray();
 	setTimeout(function() {
 		snd.play();
-	}, 10000);
+		setTimeout(function() {
+			snd.pause();
+			setTimeout(function() {
+				snd2.play();
+			}, 3000);
+		}, 3000);
+	}, 3000);
+	
+	
+	
+	
 	
 	//getLocation();
 });
