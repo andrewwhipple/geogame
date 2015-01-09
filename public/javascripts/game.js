@@ -108,7 +108,7 @@ function checkSound() {
 		console.log(globalPos.latitude);
 		console.log(positionArray[i].longitude);
 		console.log(globalPos.longitude);
-		if (isPos2WithinMarginOfPos1(positionArray[i], globalPos, 0.0001)) {
+		if (isPos2WithinMarginOfPos1(positionArray[i], globalPos, 0.001)) {
 			play(mp3FilenameArray[i]);
 			var removed = positionArray.splice(i, 1);
 			console.log(removed[0]);
