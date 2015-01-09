@@ -4,8 +4,6 @@ var globalPos = {latitude: 0, longitude: 0};
  //initialize?
 var globalPositionWatchNumber;
 //var mp3FilenameMap = new Map();
-var snd0 = null;
-var snd1 = null;
 var curSnd = null;
 var gameOver = false;
 var finalPos; //initiliaze
@@ -15,12 +13,14 @@ var finalPos; //initiliaze
 var positionArray = [];
 var sndArray = [];
 
-
+//Initiates watching the location. Basically just a wrapper of the geolocation api.
 function getLocation() {
 	globalPositionWatchNumber = navigator.geolocation.watchPosition(setPosition, handleError, {enableHighAccuracy: true});
 	console.log("Meow");	
 }
 
+
+//Error handler for watchPosition. Inserts an alert onto the home page. 
 function handleError(err) { 
 	if (err.code == 1) { //user said no 
 		$('#alertSpace').html('<div class="alert alert-danger" role="alert"><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"</span><span class="sr-only">Error:</span>This game does not work without location services.</div>');
@@ -32,7 +32,7 @@ function handleError(err) {
 	
 }
 
-//Debug function putting it in an alert
+//Debug function putting the lat. and long. in an alert on the home page
 function printPosition(position) {
 	var latitude = position.coords.latitude;
 	var longitude = position.coords.longitude;
@@ -41,48 +41,52 @@ function printPosition(position) {
 	$('#alertSpace').html('<div class="alert alert-success" role="alert">Lat: ' + latitude + ', Long: ' + longitude + '</div>');
 }
 
+//Callback for watchPosition that sets the lat and long in the global "globalPos" object. Also currently calls printPosition to debug. Also calls checkSound() on each location update.
 function setPosition(position) {
 	globalPos.latitude = position.coords.latitude;
 	globalPos.longitude = position.coords.longitude;
 	
-	globalLat = globalPos.latitude;
-	globalLong = globalPos.longitude;
-	
-	console.log("globalLat: " + globalLat + ", globalLong: " + globalLong);
+	console.log("globalLat: " + globalPos.latitude + ", globalLong: " + globalPos.longitude);
 	checkSound();
 	printPosition(position);
 	
 }
 
-function fillPositionArray() {
-	/*var pos = {
-		latitude: 37.42512,
-		longitude: -122.16074
-	};
-	mp3FilenameMap.set(pos, 'InsideOut');
-	
-	var pos2 = {
-		latitude: 37.43510,
-		longitude: -112.16070
-	};	
-	mp3FilenameMap.set(pos2, 'WakeBakeSkate');*/
-		
-	var pos = {
-		latitude: 37.42512,
-		longitude: -122.16074
-	};
-	positionArray[0] = pos;
-	sndArray[0] = snd0;
+/*Sets up the position and snd database to initialize the game. 
+	The database set up as a pair of arrays (rather than a map, because the Map object doesn't work on some mobile browsers...)
 
-	var pos2 = {
+	There is one array of pos objects, and one array of Audio objects, and the appropriate a linked pos and snd object will have
+	the same index in both arrays. 
+
+	The nice thing about this over the map is there can be an explicit order to positions/sounds, so you can have a different 
+	sound play the second etc time you visit a location.
+*/
+function buildDatabase() {
+		
+	var pos0 = {
+		latitude: 37.42512,
+		longitude: -122.16074
+	};
+	snd0 = new Audio('InsideOut.mp3');
+	snd0.play();
+	snd0.pause();
+	
+	addToDatabase(pos0, snd0, 0);
+	
+
+	var pos1 = {
 		latitude: 37.43510,
 		longitude: -112.16070
 	};	
-	positionArray[1] = pos2;
-	sndArray[1] = snd1;
+	snd1 = new Audio('WakeBakeSkate.mp3');
+	snd1.play();
+	snd1.pause();
+	
+	addToDatabase(pos1, snd1, 1);
 	
 }
 
+//Comparison function that determines whether the 2nd pos object passed in is within "margin" degrees of pos1. 
 function isPos2WithinMarginOfPos1(pos1, pos2, margin) {
 	var lat1 = pos1.latitude;
 	var lat2 = pos2.latitude;
@@ -102,6 +106,8 @@ function isPos2WithinMarginOfPos1(pos1, pos2, margin) {
 	return false;	
 }
 
+//Loops through the database and compares the current position to the positions in the db, and if it finds one, plays that sound. 
+//Also removes the sound from the db 
 function checkSound() {
 	console.log('Checksound');
 	for (var i = 0; i < positionArray.length; i++) {
@@ -111,13 +117,10 @@ function checkSound() {
 		console.log(positionArray[i].longitude);
 		console.log(globalPos.longitude);
 		if (isPos2WithinMarginOfPos1(positionArray[i], globalPos, 0.1)) {
-			if (curSnd != null) curSnd.pause();
+			if (curSnd != null) curSnd.pause(); //only plays one sound at a time
 			sndArray[i].play();
 			curSnd = sndArray[i];
-			var removed = positionArray.splice(i, 1);
-			console.log(removed[0]);
-			removed = sndArray.splice(i, 1);
-			console.log(removed[0]);
+			removeFromDatabase(i);
 		}
 		
 	}
@@ -154,7 +157,21 @@ function checkSound() {
 	
 }
 
+//Removes the pos/snd pair at the given index from the database
+function removeFromDatabase(index) {
+	var removed = positionArray.splice(index, 1); //removes sound once it's played
+	console.log(removed[0]);
+	removed = sndArray.splice(index, 1);
+	console.log(removed[0]);
+	
+}
 
+function addToDatabase(pos, snd, index) {
+	positionArray[index] = pos;
+	sndArray[index] = snd;
+}
+
+//Currently unused, a play function. 
 function play(sound) {
 	if (window.HTMLAudioElement) {
 		if (snd != null) snd.pause();
@@ -173,16 +190,12 @@ function play(sound) {
   	}
 }
 
-function loadSounds() {
-	snd0 = new Audio('InsideOut.mp3');
-	snd0.play();
-	snd0.pause();
-	
-	snd1 = new Audio('WakeBakeSkate.mp3');
-	snd1.play();
-	snd1.pause();
-	
-	
+
+
+function pauseAll() {
+	for (var i = 0; i < sndArray.length; i++) {
+		sndArray[i].pause();
+	}
 	
 }
 //$('#alertSpace').html('<div class="alert alert-success" role="alert">Ummmmm</div>');
@@ -191,14 +204,14 @@ document.querySelector('#alertSpace').innerHTML = "Javascript Linked!";
 
 
 $('#playButton').click(function(){
-	loadSounds();
-	fillPositionArray();
+	buildDatabase();
 	getLocation();
 });
 
 
 function endGame() {
 	clearWatch(globalPositionWatchNumber);	
+	pauseAll();
 }
 
 
