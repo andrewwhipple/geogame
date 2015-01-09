@@ -149,6 +149,8 @@ function checkSound() {
 	}*/
 	
 }
+
+
 function play(sound) {
 	if (window.HTMLAudioElement) {
 		if (snd != null) snd.pause();
