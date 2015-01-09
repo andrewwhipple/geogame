@@ -75,8 +75,8 @@ function buildDatabase() {
 	
 
 	var pos1 = {
-		latitude: 37.43510,
-		longitude: -112.16070
+		latitude: 37.425226,
+		longitude: -122.160792
 	};	
 	snd1 = new Audio('WakeBakeSkate.mp3');
 	snd1.play();
@@ -116,7 +116,7 @@ function checkSound() {
 		console.log(globalPos.latitude);
 		console.log(positionArray[i].longitude);
 		console.log(globalPos.longitude);
-		if (isPos2WithinMarginOfPos1(positionArray[i], globalPos, 0.1)) {
+		if (isPos2WithinMarginOfPos1(positionArray[i], globalPos, 0.00001)) {
 			if (curSnd != null) curSnd.pause(); //only plays one sound at a time
 			sndArray[i].play();
 			curSnd = sndArray[i];
