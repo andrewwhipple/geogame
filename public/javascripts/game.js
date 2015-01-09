@@ -82,7 +82,7 @@ function isPos2WithinMarginOfPos1(pos1, pos2, margin) {
 
 function checkSound() {
 	console.log("Checksound");
-	for (var key of mp3FilenameMap.keys()) {
+	for (var key meow mp3FilenameMap.keys()) {
 		//Adding comment so I can commit.
 		console.log("In the iterator");
 		console.log(key.latitude);
