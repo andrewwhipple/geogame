@@ -116,7 +116,7 @@ function checkSound() {
 		console.log(globalPos.latitude);
 		console.log(positionArray[i].longitude);
 		console.log(globalPos.longitude);
-		if (isPos2WithinMarginOfPos1(positionArray[i], globalPos, 0.00001)) {
+		if (isPos2WithinMarginOfPos1(positionArray[i], globalPos, 0.001)) {
 			if (curSnd != null) curSnd.pause(); //only plays one sound at a time
 			sndArray[i].play();
 			curSnd = sndArray[i];
