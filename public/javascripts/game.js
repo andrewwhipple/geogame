@@ -196,6 +196,15 @@ $('#playButton').click(function(){
 			snd.pause();
 			setTimeout(function() {
 				snd2.play();
+				setTimeout(function() {
+					snd2.pause();
+					setTimeout(function() {
+						snd1.play();
+						setTimeout(function() {
+							snd2.play();
+						}, 3000);
+					}, 3000);
+				}, 3000);
 			}, 3000);
 		}, 3000);
 	}, 3000);
