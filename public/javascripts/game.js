@@ -169,15 +169,22 @@ function play(sound) {
   	}
 }
 
-
+function loadSounds() {
+	snd = new Audio('InsideOut.mp3');
+	snd.play();
+	//snd.pause();
+	
+	
+}
 //$('#alertSpace').html('<div class="alert alert-success" role="alert">Ummmmm</div>');
 
 document.querySelector('#alertSpace').innerHTML = "Javascript Linked!";
 
 
 $('#playButton').click(function(){
+	loadSounds();
 	fillPositionArray();
-	getLocation();
+	//getLocation();
 });
 
 
