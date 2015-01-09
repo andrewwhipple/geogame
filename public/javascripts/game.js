@@ -199,7 +199,7 @@ $('#playButton').click(function(){
 				setTimeout(function() {
 					snd2.pause();
 					setTimeout(function() {
-						snd1.play();
+						snd.play();
 						setTimeout(function() {
 							snd2.play();
 						}, 3000);
